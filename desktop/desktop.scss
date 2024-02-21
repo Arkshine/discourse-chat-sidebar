@@ -1,0 +1,134 @@
+:root {
+  --chat-sidebar-width: #{$chat_sidebar_width};
+  --chat-sidebar-breakpoint: #{$chat_sidebar_breakpoint};
+}
+
+$breakpoint: $chat_sidebar_breakpoint;
+
+@if $chat_sidebar_breakpoint == "auto" {
+  $breakpoint: 0;
+}
+
+@media screen and (min-width: $breakpoint) {
+  body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
+    // Hides Chat icon in header
+    .header-dropdown-toggle.chat-header-icon {
+      display: none;
+    }
+
+    // Hides Sidebar action icons
+    .c-navbar {
+      &__toggle-drawer-button {
+        display: none;
+      }
+
+      @if $chat_sidebar_hide_close_button == "true" {
+        .c-navbar__close-drawer-button {
+          display: none;
+        }
+      }
+    }
+
+    /**
+     * Without sidebar
+     */
+
+    // Adds the chat sidebar column to the grid
+    #main-outlet-wrapper {
+      @if $chat_sidebar_position == "left" {
+        grid-template-areas: "sidebar-chat sidebar content";
+        grid-template-columns: var(--chat-sidebar-width) 0 minmax(
+            0,
+            1fr
+          ) !important;
+      } @else {
+        grid-template-areas: "sidebar content sidebar-chat";
+        grid-template-columns: 0 minmax(0, 1fr) var(
+            --chat-sidebar-width
+          ) !important;
+      }
+    }
+
+    // We don't want to reduce the main content default width
+    #main-outlet-wrapper.wrap,
+    .d-header > .wrap {
+      max-width: calc(var(--d-max-width) + var(--chat-sidebar-width));
+    }
+
+    // When the sidebar is hidden, we need to manually add the gap.
+    // However, the sidebar is still part of the grid template, we need to
+    // adjust the margin of the main content to remvoe the gap.
+    &:not(.has-sidebar-page) {
+      #main-outlet-wrapper {
+        gap: 0 2em;
+
+        #main-outlet {
+          margin-left: -2em;
+        }
+      }
+    }
+
+    /**
+     * With sidebar
+     */
+
+    // Adds the chat sidebar column to the grid
+    &.has-sidebar-page {
+      #main-outlet-wrapper {
+        @if $chat_sidebar_position == "left" {
+          grid-template-areas: "sidebar-chat sidebar content";
+          grid-template-columns:
+            var(--chat-sidebar-width)
+            var(--d-sidebar-width) minmax(0, 1fr) !important;
+        } @else {
+          grid-template-areas: "sidebar content sidebar-chat";
+          grid-template-columns: var(--d-sidebar-width) minmax(0, 1fr) var(
+              --chat-sidebar-width
+            ) !important;
+        }
+      }
+
+      #main-outlet-wrapper.wrap,
+      .d-header > .wrap {
+        max-width: calc(
+          var(--d-sidebar-width) + var(--d-max-width) +
+            var(--chat-sidebar-width)
+        );
+      }
+    }
+
+    // Chat sidebar
+    .ark-chat-sidebar-wrapper.docked {
+      &__left,
+      &__right {
+        .chat-drawer {
+          height: calc(
+            100vh - var(--header-offset, 0px) - var(--composer-height, 0px)
+          ) !important;
+          width: var(--chat-sidebar-width) !important;
+          position: fixed;
+          top: var(--header-offset);
+
+          .chat-drawer-container {
+            box-shadow: none;
+            border-top: none;
+            border-bottom: 1px solid var(--primary-low);
+          }
+        }
+      }
+    }
+  }
+
+  html.composer-open {
+    .ark-chat-sidebar-wrapper.docked {
+      &__left,
+      &__right {
+        .chat-drawer {
+          .chat-drawer-container {
+            border-bottom: 1px solid var(--primary-low);
+          }
+        }
+      }
+    }
+  }
+}

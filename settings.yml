@@ -16,4 +16,4 @@ chat_sidebar_position:
 chat_sidebar_hide_close_button:
   type: bool
   default: false
-  description: "Hide the close button in the chat sidebar"
+  description: "Hides the close button in the chat sidebar"

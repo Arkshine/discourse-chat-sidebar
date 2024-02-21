@@ -9,6 +9,10 @@ export default apiInitializer("1.8.0", (api) => {
     return;
   }
 
+  if (!["left", "right"].includes(settings.chat_sidebar_position)) {
+    return;
+  }
+
   api.renderInOutlet("after-main-outlet", ChatSidebar);
 
   api.addChatDrawerStateCallback((data) => {
@@ -53,16 +57,9 @@ export default apiInitializer("1.8.0", (api) => {
       `(min-width: calc(${dMaxWidth} + ${dSidebarWidth} + ${chatSidebarWidth} ))`
     );
 
-    if (!media_query.matches) {
-      return false;
-    }
-
-    return true;
+    return media_query.matches;
   }
 
-  /**
-   * This will open the chat drawer when the page loads
-   */
   api.modifyClass("component:chat-drawer", {
     pluginId: "chat-drawer",
 

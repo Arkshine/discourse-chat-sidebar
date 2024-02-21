@@ -1,6 +1,7 @@
 :root {
   --chat-sidebar-width: #{$chat_sidebar_width};
   --chat-sidebar-breakpoint: #{$chat_sidebar_breakpoint};
+  --chat-sidebar-gap: 2em;
 }
 
 $breakpoint: $chat_sidebar_breakpoint;
@@ -34,71 +35,75 @@ $breakpoint: $chat_sidebar_breakpoint;
       }
     }
 
-    /**
+    @if $chat_sidebar_position == "left" or $chat_sidebar_position == "right" {
+      /**
      * Without sidebar
      */
 
-    // Adds the chat sidebar column to the grid
-    #main-outlet-wrapper {
-      @if $chat_sidebar_position == "left" {
-        grid-template-areas: "sidebar-chat sidebar content";
-        grid-template-columns: var(--chat-sidebar-width) 0 minmax(
-            0,
-            1fr
-          ) !important;
-      } @else {
-        grid-template-areas: "sidebar content sidebar-chat";
-        grid-template-columns: 0 minmax(0, 1fr) var(
-            --chat-sidebar-width
-          ) !important;
-      }
-    }
-
-    // We don't want to reduce the main content default width
-    #main-outlet-wrapper.wrap,
-    .d-header > .wrap {
-      max-width: calc(var(--d-max-width) + var(--chat-sidebar-width));
-    }
-
-    // When the sidebar is hidden, we need to manually add the gap.
-    // However, the sidebar is still part of the grid template, we need to
-    // adjust the margin of the main content to remvoe the gap.
-    &:not(.has-sidebar-page) {
-      #main-outlet-wrapper {
-        gap: 0 2em;
-
-        #main-outlet {
-          margin-left: -2em;
-        }
-      }
-    }
-
-    /**
-     * With sidebar
-     */
-
-    // Adds the chat sidebar column to the grid
-    &.has-sidebar-page {
+      // Adds the chat sidebar column to the grid
       #main-outlet-wrapper {
         @if $chat_sidebar_position == "left" {
           grid-template-areas: "sidebar-chat sidebar content";
-          grid-template-columns:
-            var(--chat-sidebar-width)
-            var(--d-sidebar-width) minmax(0, 1fr) !important;
-        } @else {
+          grid-template-columns: var(--chat-sidebar-width) 0 minmax(
+              0,
+              1fr
+            ) !important;
+        } @else if $chat_sidebar_position == "right" {
           grid-template-areas: "sidebar content sidebar-chat";
-          grid-template-columns: var(--d-sidebar-width) minmax(0, 1fr) var(
+          grid-template-columns: 0 minmax(0, 1fr) var(
               --chat-sidebar-width
             ) !important;
         }
       }
 
+      // We don't want to reduce the main content default width
       #main-outlet-wrapper.wrap,
       .d-header > .wrap {
-        max-width: calc(
-          var(--d-sidebar-width) + var(--d-max-width) +
-            var(--chat-sidebar-width)
-        );
+        max-width: calc(var(--d-max-width) + var(--chat-sidebar-width));
+      }
+
+      // When the sidebar is hidden, we need to manually add the gap.
+      // However, the sidebar is still part of the grid template, we need to
+      // adjust the margin of the main content to remvoe the gap.
+      &:not(.has-sidebar-page) {
+        #main-outlet-wrapper {
+          gap: 0 var(--chat-sidebar-gap);
+
+          #main-outlet {
+            margin-left: -var(--chat-sidebar-gap);
+          }
+        }
+      }
+
+      /**
+       * With sidebar
+       */
+
+      // Adds the chat sidebar column to the grid
+      &.has-sidebar-page {
+        #main-outlet-wrapper {
+          @if $chat_sidebar_position == "left" {
+            grid-template-areas: "sidebar-chat sidebar content";
+            grid-template-columns:
+              var(--chat-sidebar-width)
+              var(--d-sidebar-width) minmax(0, 1fr) !important;
+          } @else if $chat_sidebar_position == "right" {
+            grid-template-areas: "sidebar content sidebar-chat";
+            grid-template-columns: var(--d-sidebar-width) minmax(0, 1fr) var(
+                --chat-sidebar-width
+              ) !important;
+          }
+        }
+
+        #main-outlet-wrapper.wrap,
+        .d-header > .wrap {
+          max-width: calc(
+            var(--d-sidebar-width) +
+              var(--d-max-width) +
+              var(--chat-sidebar-width) +
+              var(--chat-sidebar-gap)
+          );
+        }
       }
     }
 

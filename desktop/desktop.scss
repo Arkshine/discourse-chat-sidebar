@@ -16,6 +16,11 @@ $breakpoint: $chat_sidebar_breakpoint;
       display: none;
     }
 
+    // Hides Chat drawer resizer
+    .chat-drawer-resizer {
+      display: none;
+    }
+
     // Hides Sidebar action icons
     .c-navbar {
       &__toggle-drawer-button {

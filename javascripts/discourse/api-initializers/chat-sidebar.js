@@ -73,6 +73,7 @@ export default apiInitializer("1.8.0", (api) => {
         (!settings.chat_sidebar_hide_close_button &&
           this.chatSidebarState.isPreferredClosed) ||
         (!settings.chat_sidebar_hide_fullscreen_button &&
+          !settings.chat_sidebar_ignore_fullscreen_user_preference &&
           this.chatStateManager.isFullPagePreferred)
       ) {
         return;

@@ -16,8 +16,12 @@ chat_sidebar_position:
 chat_sidebar_hide_fullscreen_button:
   type: bool
   default: false
-  description: "Hides the fullscreen button in the chat sidebar.<br /> If not hidden, the user's preference is maintained."
+  description: "Hides the fullscreen button in the chat sidebar.<br /> <small>If not hidden, the user's preference is maintained.</small>"
+chat_sidebar_ignore_fullscreen_user_preference:
+  type: bool
+  default: true
+  description: "Ignores the user's preference when the fullscreen mode is entered. <br /><small>This means the sidebar will be always displayed by default instead.</small>"
 chat_sidebar_hide_close_button:
   type: bool
   default: true
-  description: "Hides the close button in the chat sidebar.<br /> If not hidden, the user's preference is maintained."
+  description: "Hides the close button in the chat sidebar.<br /><small> If not hidden, the user's preference is maintained.</small>"

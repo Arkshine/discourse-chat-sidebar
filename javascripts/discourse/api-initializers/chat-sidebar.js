@@ -1,5 +1,9 @@
+import { next } from "@ember/runloop";
+import { inject as service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
 import ChatSidebar from "../components/chat-sidebar";
+
+const PLUGIN_ID = "chat-sidebar";
 
 export default apiInitializer("1.8.0", (api) => {
   const siteSettings = api.container.lookup("service:site-settings");
@@ -14,34 +18,6 @@ export default apiInitializer("1.8.0", (api) => {
   }
 
   api.renderInOutlet("after-main-outlet", ChatSidebar);
-
-  api.addChatDrawerStateCallback((data) => {
-    const { isDrawerActive } = data;
-
-    if (isDrawerActive) {
-      document.body.classList.add("chat-sidebar-active");
-    } else {
-      document.body.classList.remove("chat-sidebar-active");
-    }
-  });
-
-  api.onPageChange((url) => {
-    const router = api.container.lookup("service:router");
-    const route = router.recognize(url);
-
-    if (route.name.startsWith("chat.")) {
-      return;
-    }
-
-    const chatStateManager = api.container.lookup("service:chat-state-manager");
-
-    if (chatStateManager.isDrawerActive) {
-      return;
-    }
-
-    const appEvents = api.container.lookup("service:app-events");
-    appEvents.trigger("sidebar-chat:toggle-drawer");
-  });
 
   function validBreakpointAuto() {
     const application = api.container.lookup("controller:application");
@@ -61,25 +37,9 @@ export default apiInitializer("1.8.0", (api) => {
   }
 
   api.modifyClass("component:chat-drawer", {
-    pluginId: "chat-drawer",
+    pluginId: PLUGIN_ID,
 
-    didInsertElement() {
-      this._super(...arguments);
-
-      this.appEvents.on(
-        "sidebar-chat:toggle-drawer",
-        this.openSidebarDrawer.bind(this)
-      );
-    },
-
-    didDestroyElement() {
-      this._super(...arguments);
-
-      this.appEvents.off(
-        "sidebar-chat:toggle-drawer",
-        this.openSidebarDrawer.bind(this)
-      );
-    },
+    chatSidebarState: service(),
 
     _performCheckSize() {
       this._super(...arguments);
@@ -90,6 +50,7 @@ export default apiInitializer("1.8.0", (api) => {
       ) {
         this.openSidebarDrawer();
       } else if (
+        this.chatStateManager.isDrawerActive &&
         settings.chat_sidebar_breakpoint === "auto" &&
         !validBreakpointAuto()
       ) {
@@ -98,13 +59,33 @@ export default apiInitializer("1.8.0", (api) => {
     },
 
     openSidebarDrawer() {
-      // Force the chat drawer to be active.
-      this.chatStateManager.prefersDrawer();
+      // Hides the original container and deletes its content.
+      const originalContainer = document.querySelector(
+        ".chat-drawer-outlet-container"
+      );
+      originalContainer.style.display = "none";
 
-      // Hides the original container.
-      // Open our custom chat drawer.
-      document.querySelector(".chat-drawer-outlet-container").style.display =
-        "none";
+      next(() => {
+        originalContainer.querySelector(".chat-drawer")?.remove();
+      });
+
+      if (
+        (!settings.chat_sidebar_hide_close_button &&
+          this.chatSidebarState.isPreferredClosed) ||
+        (!settings.chat_sidebar_hide_fullscreen_button &&
+          this.chatStateManager.isFullPagePreferred)
+      ) {
+        return;
+      }
+
+      if (
+        !settings.chat_sidebar_hide_close_button &&
+        this.chatSidebarState.isPreferredClosed
+      ) {
+        this.chatSidebarState.reset();
+      }
+
+      // Forces to open our chat drawer.
       this.openURL("/chat");
     },
   });

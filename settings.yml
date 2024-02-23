@@ -13,7 +13,11 @@ chat_sidebar_position:
     - left
     - right
   description: "Position of the chat sidebar"
-chat_sidebar_hide_close_button:
+chat_sidebar_hide_fullscreen_button:
   type: bool
   default: false
-  description: "Hides the close button in the chat sidebar"
+  description: "Hides the fullscreen button in the chat sidebar.<br /> If not hidden, the user's preference is maintained."
+chat_sidebar_hide_close_button:
+  type: bool
+  default: true
+  description: "Hides the close button in the chat sidebar.<br /> If not hidden, the user's preference is maintained."

@@ -11,7 +11,7 @@ $breakpoint: $chat_sidebar_breakpoint;
 }
 
 @media screen and (min-width: $breakpoint) {
-  body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
+  body.chat-enabled.chat-drawer-active:not(.has-full-page-chat) {
     // Hides Chat icon in header
     .header-dropdown-toggle.chat-header-icon {
       display: none;
@@ -36,9 +36,9 @@ $breakpoint: $chat_sidebar_breakpoint;
     }
 
     @if $chat_sidebar_position == "left" or $chat_sidebar_position == "right" {
-      /**
-     * Without sidebar
-     */
+      //
+      // Without sidebar
+      //
 
       // Adds the chat sidebar column to the grid
       #main-outlet-wrapper {
@@ -75,9 +75,9 @@ $breakpoint: $chat_sidebar_breakpoint;
         }
       }
 
-      /**
-       * With sidebar
-       */
+      //
+      // With sidebar
+      //
 
       // Adds the chat sidebar column to the grid
       &.has-sidebar-page {

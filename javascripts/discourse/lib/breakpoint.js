@@ -55,7 +55,7 @@ export function validBreakpoint() {
 
   fetchElements(selectorsList);
 
-  if (!elements) {
+  if (!elements || !elements.header || !elements.mainOutlet) {
     return false;
   }
 

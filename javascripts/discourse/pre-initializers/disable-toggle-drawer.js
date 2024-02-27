@@ -1,14 +1,16 @@
 import { action } from "@ember/object";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
+const PLUGIN_ID = "chat-sidebar";
+
 export default {
-  name: "chat-plugin-api2",
+  name: PLUGIN_ID,
   after: "inject-discourse-objects",
 
   initialize() {
     withPluginApi("1.2.0", (api) => {
       api.modifyClass("service:chat", {
-        pluginId: "chat-sidebar",
+        pluginId: PLUGIN_ID,
 
         @action
         toggleDrawer() {

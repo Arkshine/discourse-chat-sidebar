@@ -1,27 +1,17 @@
 chat_sidebar_breakpoint:
   type: string
-  default: auto
-  description: "Breakpoint in px for the chat sidebar to appear.<br /> Set to <code><strong>auto</strong></code> to use the default sidebar and content width as breakpoint"
+  default: "auto"
+  description: "Breakpoint in px for the chat sidebar to appear.<br /> Set to <code><strong>auto</strong></code> to use the default sidebar and content width as breakpoint."
 chat_sidebar_width:
   type: string
-  default: 400px
-  description: "Width of the chat sidebar"
+  default: "400px"
+  description: "Width of the chat sidebar."
 chat_sidebar_position:
   type: enum
-  default: "right"
+  default: "outside-right"
   choices:
     - left
     - right
-  description: "Position of the chat sidebar"
-chat_sidebar_hide_fullscreen_button:
-  type: bool
-  default: false
-  description: "Hides the fullscreen button in the chat sidebar.<br /> <small>If not hidden, the user's preference is maintained.</small>"
-chat_sidebar_ignore_fullscreen_user_preference:
-  type: bool
-  default: true
-  description: "Ignores the user's preference when the fullscreen mode is entered. <br /><small>This means the sidebar will be always displayed by default instead.</small>"
-chat_sidebar_hide_close_button:
-  type: bool
-  default: true
-  description: "Hides the close button in the chat sidebar.<br /><small> If not hidden, the user's preference is maintained.</small>"
+    - outside-left
+    - outside-right
+  description: "Position of the chat sidebar."

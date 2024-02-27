@@ -1,7 +1,6 @@
-import { next } from "@ember/runloop";
-import { inject as service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
-import ChatSidebar from "../components/chat-sidebar";
+import { bind } from "discourse-common/utils/decorators";
+import { resetStyle, validBreakpoint } from "../lib/breakpoint";
 
 const PLUGIN_ID = "chat-sidebar";
 
@@ -13,81 +12,83 @@ export default apiInitializer("1.8.0", (api) => {
     return;
   }
 
-  if (!["left", "right"].includes(settings.chat_sidebar_position)) {
+  const currentUser = api.getCurrentUser();
+
+  if (!currentUser || !currentUser.get("has_chat_enabled")) {
     return;
-  }
-
-  api.renderInOutlet("after-main-outlet", ChatSidebar);
-
-  function validBreakpointAuto() {
-    const application = api.container.lookup("controller:application");
-
-    const bodyComputedStyle = getComputedStyle(document.body);
-    const dMaxWidth = bodyComputedStyle.getPropertyValue("--d-max-width");
-    const dSidebarWidth = application.showSidebar
-      ? bodyComputedStyle.getPropertyValue("--d-sidebar-width")
-      : "0px";
-    const chatSidebarWidth = settings.chat_sidebar_width;
-
-    const media_query = window.matchMedia(
-      `(min-width: calc(${dMaxWidth} + ${dSidebarWidth} + ${chatSidebarWidth} ))`
-    );
-
-    return media_query.matches;
   }
 
   api.modifyClass("component:chat-drawer", {
     pluginId: PLUGIN_ID,
 
-    chatSidebarState: service(),
-
-    _performCheckSize() {
+    didInsertElement() {
       this._super(...arguments);
+      window.addEventListener("resize", this._chatSidebarResize, {
+        passive: true,
+      });
+    },
 
-      if (
-        !this.chatStateManager.isDrawerActive &&
-        (settings.chat_sidebar_breakpoint !== "auto" || validBreakpointAuto())
-      ) {
+    willDestroyElement() {
+      this._super(...arguments);
+      window.removeEventListener("resize", this._chatSidebarResize, {
+        passive: true,
+      });
+    },
+
+    @bind
+    _chatSidebarResize() {
+      if (site.mobileView || this.router.currentRouteName.startsWith("chat")) {
+        return;
+      }
+
+      const isValidBreakpoint = validBreakpoint();
+
+      if (isValidBreakpoint && !this.chatStateManager.isDrawerActive) {
         this.openSidebarDrawer();
-      } else if (
-        this.chatStateManager.isDrawerActive &&
-        settings.chat_sidebar_breakpoint === "auto" &&
-        !validBreakpointAuto()
-      ) {
+
+        // Re-check once the chat drawer is open.
+        requestAnimationFrame(() => {
+          if (!validBreakpoint()) {
+            this.close();
+          }
+        });
+      } else if (!isValidBreakpoint && this.chatStateManager.isDrawerActive) {
         this.close();
       }
     },
 
+    _performCheckSize() {
+      this._super(...arguments);
+      this._chatSidebarResize();
+    },
+
     openSidebarDrawer() {
-      // Hides the original container and deletes its content.
-      const originalContainer = document.querySelector(
-        ".chat-drawer-outlet-container"
-      );
-      originalContainer.style.display = "none";
-
-      next(() => {
-        originalContainer.querySelector(".chat-drawer")?.remove();
-      });
-
-      if (
-        (!settings.chat_sidebar_hide_close_button &&
-          this.chatSidebarState.isPreferredClosed) ||
-        (!settings.chat_sidebar_hide_fullscreen_button &&
-          !settings.chat_sidebar_ignore_fullscreen_user_preference &&
-          this.chatStateManager.isFullPagePreferred)
-      ) {
-        return;
-      }
-
-      if (
-        !settings.chat_sidebar_hide_close_button &&
-        this.chatSidebarState.isPreferredClosed
-      ) {
-        this.chatSidebarState.reset();
-      }
-
-      // Forces to open our chat drawer.
       this.openURL("/chat");
     },
+  });
+
+  if (settings.chat_sidebar_breakpoint === "auto") {
+    api.modifyClass("controller:application", {
+      pluginId: PLUGIN_ID,
+
+      _mainOutletAnimate() {
+        this._super(...arguments);
+
+        // Checks when the sidebar is toggled and after the animation.
+        requestAnimationFrame(() => {
+          api.container.lookup("component:chat-drawer")._chatSidebarResize();
+        });
+      },
+    });
+  }
+
+  api.onPageChange((path) => {
+    const route = api.container.lookup("service:router").recognize(path);
+
+    if (route.name.startsWith("chat.")) {
+      resetStyle();
+    } else {
+      api.container.lookup("component:chat-drawer")._chatSidebarResize();
+    }
   });
 });

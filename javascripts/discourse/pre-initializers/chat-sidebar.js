@@ -17,6 +17,9 @@ export default {
 
         // Wether the chat drawer was opened or not
         wasDrawerOpened: false,
+
+        // Wether the chat drawer was expanded or not
+        wasDrawerExpanded: true,
       });
 
       api.modifyClass("service:chat", {

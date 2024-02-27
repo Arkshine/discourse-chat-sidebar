@@ -90,6 +90,8 @@ export default apiInitializer("1.8.0", (api) => {
 
       // If the chat drawer was opened, we don't want to close it.
       if (this.chatStateManager.wasDrawerOpened) {
+        this.chatStateManager.isDrawerExpanded =
+          this.chatStateManager.wasDrawerExpanded;
         document.body.classList.remove("chat-sidebar-active");
         return;
       }
@@ -102,6 +104,7 @@ export default apiInitializer("1.8.0", (api) => {
 
       // If the chat drawer was opened, we don't want to reopen it.
       if (this.chatStateManager.wasDrawerOpened) {
+        this.chatStateManager.isDrawerExpanded = true;
         document.body.classList.add("chat-sidebar-active");
         return;
       }
@@ -125,17 +128,19 @@ export default apiInitializer("1.8.0", (api) => {
     });
   }
 
-  api.addChatDrawerStateCallback(({ isDrawerActive }) => {
+  api.addChatDrawerStateCallback(({ isDrawerActive, isDrawerExpanded }) => {
     const chatStateManager = api.container.lookup("service:chat-state-manager");
 
     if (isDrawerActive) {
       if (!chatStateManager.isChatSidebarActive) {
         chatStateManager.wasDrawerOpened = true;
+        chatStateManager.wasDrawerExpanded = isDrawerExpanded;
       } else {
         document.body.classList.add("chat-sidebar-active");
       }
     } else {
       chatStateManager.wasDrawerOpened = false;
+      chatStateManager.wasDrawerExpanded = false;
       document.body.classList.remove("chat-sidebar-active");
     }
   });

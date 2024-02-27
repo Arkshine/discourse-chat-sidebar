@@ -1,3 +1,4 @@
+import { cancel, throttle } from "@ember/runloop";
 import { apiInitializer } from "discourse/lib/api";
 import { bind } from "discourse-common/utils/decorators";
 import { resetStyle, validBreakpoint } from "../lib/breakpoint";
@@ -33,28 +34,46 @@ export default apiInitializer("1.8.0", (api) => {
       window.removeEventListener("resize", this._chatSidebarResize, {
         passive: true,
       });
+
+      if (this.sidebarResizeTimer) {
+        cancel(this.sidebarResizeTimer);
+        this.sidebarResizeTimer = null;
+      }
     },
 
     @bind
     _chatSidebarResize() {
-      if (site.mobileView || this.router.currentRouteName.startsWith("chat")) {
-        return;
-      }
+      this.sidebarResizeTimer = throttle(
+        this,
+        this._performChatSidebarResize,
+        50
+      );
+    },
 
-      const isValidBreakpoint = validBreakpoint();
+    _performChatSidebarResize() {
+      requestAnimationFrame(() => {
+        if (
+          site.mobileView ||
+          this.router.currentRouteName.startsWith("chat")
+        ) {
+          return;
+        }
 
-      if (isValidBreakpoint && !this.chatStateManager.isDrawerActive) {
-        this.openSidebarDrawer();
+        const isValidBreakpoint = validBreakpoint();
 
-        // Re-check once the chat drawer is open.
-        requestAnimationFrame(() => {
-          if (!validBreakpoint()) {
-            this.close();
-          }
-        });
-      } else if (!isValidBreakpoint && this.chatStateManager.isDrawerActive) {
-        this.close();
-      }
+        if (isValidBreakpoint) {
+          this.openSidebarDrawer();
+
+          // Re-check once the chat drawer is open.
+          requestAnimationFrame(() => {
+            if (!validBreakpoint()) {
+              this.closeSidebarDrawer();
+            }
+          });
+        } else if (this.chatStateManager.isDrawerActive) {
+          this.closeSidebarDrawer();
+        }
+      });
     },
 
     _performCheckSize() {
@@ -62,7 +81,31 @@ export default apiInitializer("1.8.0", (api) => {
       this._chatSidebarResize();
     },
 
+    closeSidebarDrawer() {
+      if (!this.chatStateManager.isChatSidebarActive) {
+        return;
+      }
+
+      this.chatStateManager.isChatSidebarActive = false;
+
+      // If the chat drawer was opened, we don't want to close it.
+      if (this.chatStateManager.wasDrawerOpened) {
+        document.body.classList.remove("chat-sidebar-active");
+        return;
+      }
+
+      this.close();
+    },
+
     openSidebarDrawer() {
+      this.chatStateManager.isChatSidebarActive = true;
+
+      // If the chat drawer was opened, we don't want to reopen it.
+      if (this.chatStateManager.wasDrawerOpened) {
+        document.body.classList.add("chat-sidebar-active");
+        return;
+      }
+
       this.openURL("/chat");
     },
   });
@@ -81,6 +124,21 @@ export default apiInitializer("1.8.0", (api) => {
       },
     });
   }
+
+  api.addChatDrawerStateCallback(({ isDrawerActive }) => {
+    const chatStateManager = api.container.lookup("service:chat-state-manager");
+
+    if (isDrawerActive) {
+      if (!chatStateManager.isChatSidebarActive) {
+        chatStateManager.wasDrawerOpened = true;
+      } else {
+        document.body.classList.add("chat-sidebar-active");
+      }
+    } else {
+      chatStateManager.wasDrawerOpened = false;
+      document.body.classList.remove("chat-sidebar-active");
+    }
+  });
 
   api.onPageChange((path) => {
     const route = api.container.lookup("service:router").recognize(path);

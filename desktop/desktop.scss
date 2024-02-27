@@ -4,7 +4,7 @@
   --chat-sidebar-gap: 2em;
 }
 
-body.chat-enabled.chat-drawer-active:not(.has-full-page-chat) {
+body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
   // Hides Chat icon in header
   .header-dropdown-toggle.chat-header-icon {
     display: none;

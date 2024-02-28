@@ -109,6 +109,10 @@ export default apiInitializer("1.8.0", (api) => {
         return;
       }
 
+      if (this.chatStateManager.isDrawerActive) {
+        return;
+      }
+
       this.openURL("/chat");
     },
   });

@@ -46,7 +46,7 @@ export default apiInitializer("1.8.0", (api) => {
       this.sidebarResizeTimer = throttle(
         this,
         this._performChatSidebarResize,
-        50
+        10
       );
     },
 

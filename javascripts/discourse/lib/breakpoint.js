@@ -24,21 +24,17 @@ function applyTransformX(element, value) {
 }
 
 export function resetStyle() {
-  if (
-    ["outside-left", "outside-right"].includes(settings.chat_sidebar_position)
-  ) {
-    applyTransformX(elements.mainOutlet, 0);
-    applyTransformX(elements.header, 0);
-  } else if (["left", "right"].includes(settings.chat_sidebar_position)) {
+  applyTransformX(elements.mainOutlet, 0);
+  applyTransformX(elements.header, 0);
+
+  if (["left", "right"].includes(settings.chat_sidebar_position)) {
     elements.header.parentElement.style.maxWidth = "";
 
     if (settings.chat_sidebar_position === "left") {
-      elements.mainOutlet.style.marginRight = "auto";
       if (elements.chatDrawer) {
         elements.chatDrawer.style.left = "revert";
       }
     } else {
-      elements.mainOutlet.style.marginLeft = "auto";
       if (elements.chatDrawer) {
         elements.chatDrawer.style.right = "revert";
       }
@@ -104,14 +100,18 @@ export function validBreakpoint() {
       }
 
       elements.header.parentElement.style.maxWidth = `${totalWidth}px`;
+      elements.chatDrawer.style[settings.chat_sidebar_position] = 0;
 
-      if (settings.chat_sidebar_position === "left") {
-        elements.mainOutlet.style.marginRight = `${spaceToDistribute}px`;
-        elements.chatDrawer.style.left = `${spaceToDistribute}px`;
-      } else {
-        elements.mainOutlet.style.marginLeft = `${spaceToDistribute}px`;
-        elements.chatDrawer.style.right = `${spaceToDistribute}px`;
+      const direction = settings.chat_sidebar_position === "left" ? 1 : -1;
+
+      const distanceToCenter =
+        elements.mainOutlet.getBoundingClientRect().left - spaceToDistribute;
+
+      if (distanceToCenter > 0) {
+        applyTransformX(elements.mainOutlet, direction * distanceToCenter);
       }
+
+      applyTransformX(elements.chatDrawer, direction * spaceToDistribute);
 
       return true;
     }

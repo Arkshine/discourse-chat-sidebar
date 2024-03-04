@@ -60,8 +60,13 @@ export function validBreakpoint() {
   }
 
   const defaultChatSidebarGap = 30;
+  const columnGap = parseInt(computedStyles.mainOutlet.columnGap, 10);
+  const wrapPadding = parseInt(
+    computedStyles.mainOutlet.getPropertyValue("--d-wrap-padding-h"),
+    10
+  );
   const chatSidebarGap = `${
-    parseInt(computedStyles.mainOutlet.columnGap, 10) || defaultChatSidebarGap
+    (columnGap || defaultChatSidebarGap) + wrapPadding
   }px`;
 
   resetStyle(elements);

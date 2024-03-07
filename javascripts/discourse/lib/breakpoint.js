@@ -24,7 +24,7 @@ function applyTransformX(element, value) {
 }
 
 export function resetStyle() {
-  applyTransformX(elements.mainOutlet, 0);
+  applyTransformX(elements.mainOutletWrapper, 0);
   applyTransformX(elements.header, 0);
 
   if (["left", "right"].includes(settings.chat_sidebar_position)) {
@@ -45,22 +45,22 @@ export function resetStyle() {
 export function validBreakpoint() {
   const selectorsList = {
     header: ".d-header .contents",
-    mainOutlet: "#main-outlet-wrapper",
+    mainOutletWrapper: "#main-outlet-wrapper",
     chatDrawer: ".chat-drawer-outlet-container .chat-drawer",
   };
 
   fetchElements(selectorsList);
 
-  if (!elements || !elements.header || !elements.mainOutlet) {
+  if (!elements || !elements.header || !elements.mainOutletWrapper) {
     return false;
   }
 
   const defaultChatSidebarGap =
-    parseInt(computedStyles.mainOutlet.columnGap, 10) || 30;
+    parseInt(computedStyles.mainOutletWrapper.columnGap, 10) || 30;
 
   const wrapPadding =
     parseInt(
-      computedStyles.mainOutlet.getPropertyValue("--d-wrap-padding-h"),
+      computedStyles.mainOutletWrapper.getPropertyValue("--d-wrap-padding-h"),
       10
     ) || 0;
 
@@ -72,7 +72,7 @@ export function validBreakpoint() {
 
   if (
     window.matchMedia(
-      `(min-width: calc(${elements.mainOutlet.offsetWidth}px + ${settings.chat_sidebar_width} + ${chatSidebarGap}px + ${scrollbarWidth}px)`
+      `(min-width: calc(${elements.mainOutletWrapper.offsetWidth}px + ${settings.chat_sidebar_width} + ${chatSidebarGap}px + ${scrollbarWidth}px)`
     ).matches
   ) {
     // We have room to display the chat drawer.
@@ -93,11 +93,11 @@ export function validBreakpoint() {
       settings.chat_sidebar_position === "left"
     ) {
       const totalWidth =
-        elements.mainOutlet.offsetWidth +
+        elements.mainOutletWrapper.offsetWidth +
         elements.chatDrawer.offsetWidth +
         chatSidebarGap;
 
-      const spaceToDistribute = (clientWidth - totalWidth) / 2;
+      const sideSpace = (clientWidth - totalWidth) / 2;
 
       if (totalWidth >= clientWidth) {
         return false;
@@ -108,22 +108,22 @@ export function validBreakpoint() {
 
       const direction = settings.chat_sidebar_position === "left" ? 1 : -1;
 
-      const distanceToCenter =
-        elements.mainOutlet.getBoundingClientRect().left - spaceToDistribute;
+      const offsetToCenter =
+        elements.mainOutletWrapper.getBoundingClientRect().left - sideSpace;
 
-      if (distanceToCenter > 0) {
-        applyTransformX(elements.mainOutlet, direction * distanceToCenter);
+      if (offsetToCenter > 0) {
+        applyTransformX(elements.mainOutletWrapper, direction * offsetToCenter);
       }
 
-      applyTransformX(elements.chatDrawer, direction * spaceToDistribute);
+      applyTransformX(elements.chatDrawer, direction * sideSpace);
 
       return true;
     }
 
     const contentWithSideMargin =
-      elements.mainOutlet.offsetWidth +
+      elements.mainOutletWrapper.offsetWidth +
       parseInt(
-        computedStyles.mainOutlet[
+        computedStyles.mainOutletWrapper[
           settings.chat_sidebar_position.includes("left")
             ? "marginLeft"
             : "marginRight"
@@ -137,19 +137,12 @@ export function validBreakpoint() {
       chatSidebarGap;
 
     if (availableSpace < contentWithSideMargin) {
-      applyTransformX(
-        elements.mainOutlet,
-        settings.chat_sidebar_position.includes("left")
-          ? contentWithSideMargin - availableSpace
-          : availableSpace - contentWithSideMargin
-      );
+      const translateX = settings.chat_sidebar_position.includes("left")
+        ? contentWithSideMargin - availableSpace
+        : availableSpace - contentWithSideMargin;
 
-      applyTransformX(
-        elements.header,
-        settings.chat_sidebar_position.includes("left")
-          ? contentWithSideMargin - availableSpace
-          : availableSpace - contentWithSideMargin
-      );
+      applyTransformX(elements.mainOutletWrapper, translateX);
+      applyTransformX(elements.header, translateX);
     }
 
     return true;

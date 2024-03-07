@@ -55,21 +55,24 @@ export function validBreakpoint() {
     return false;
   }
 
-  const defaultChatSidebarGap = 30;
-  const columnGap = parseInt(computedStyles.mainOutlet.columnGap, 10);
-  const wrapPadding = parseInt(
-    computedStyles.mainOutlet.getPropertyValue("--d-wrap-padding-h"),
-    10
-  );
-  const chatSidebarGap = `${
-    (columnGap || defaultChatSidebarGap) + wrapPadding
-  }px`;
+  const defaultChatSidebarGap =
+    parseInt(computedStyles.mainOutlet.columnGap, 10) || 30;
+
+  const wrapPadding =
+    parseInt(
+      computedStyles.mainOutlet.getPropertyValue("--d-wrap-padding-h"),
+      10
+    ) || 0;
+
+  const chatSidebarGap = defaultChatSidebarGap - wrapPadding;
+  const clientWidth = document.documentElement.clientWidth;
+  const scrollbarWidth = window.innerWidth - clientWidth;
 
   resetStyle(elements);
 
   if (
     window.matchMedia(
-      `(min-width: calc(${computedStyles.mainOutlet.width} + ${settings.chat_sidebar_width} + ${chatSidebarGap})`
+      `(min-width: calc(${elements.mainOutlet.offsetWidth}px + ${settings.chat_sidebar_width} + ${chatSidebarGap}px + ${scrollbarWidth}px)`
     ).matches
   ) {
     // We have room to display the chat drawer.
@@ -92,10 +95,11 @@ export function validBreakpoint() {
       const totalWidth =
         elements.mainOutlet.offsetWidth +
         elements.chatDrawer.offsetWidth +
-        parseInt(chatSidebarGap, 10);
-      const spaceToDistribute = (window.innerWidth - totalWidth) / 2;
+        chatSidebarGap;
 
-      if (totalWidth >= window.innerWidth) {
+      const spaceToDistribute = (clientWidth - totalWidth) / 2;
+
+      if (totalWidth >= clientWidth) {
         return false;
       }
 
@@ -128,9 +132,9 @@ export function validBreakpoint() {
       );
 
     const availableSpace =
-      window.innerWidth -
+      clientWidth -
       parseInt(computedStyles.chatDrawer.width, 10) -
-      parseInt(chatSidebarGap, 10);
+      chatSidebarGap;
 
     if (availableSpace < contentWithSideMargin) {
       applyTransformX(

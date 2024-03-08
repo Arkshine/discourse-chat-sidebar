@@ -1,9 +1,6 @@
-import { cancel, throttle } from "@ember/runloop";
+import { inject as service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
-import { bind } from "discourse-common/utils/decorators";
-import { resetStyle, validBreakpoint } from "../lib/breakpoint";
-
-const PLUGIN_ID = "chat-sidebar";
+import { PLUGIN_ID } from "../services/chat-sidebar";
 
 export default apiInitializer("1.8.0", (api) => {
   const siteSettings = api.container.lookup("service:site-settings");
@@ -22,77 +19,48 @@ export default apiInitializer("1.8.0", (api) => {
   api.modifyClass("component:chat-drawer", {
     pluginId: PLUGIN_ID,
 
+    chatSidebar: service(),
+
     didInsertElement() {
       this._super(...arguments);
-      window.addEventListener("resize", this._chatSidebarResize, {
-        passive: true,
+
+      this.chatSidebar.observe().options({
+        stateCallback: this.onChatSidebarState.bind(this),
       });
     },
 
     willDestroyElement() {
       this._super(...arguments);
-      window.removeEventListener("resize", this._chatSidebarResize, {
-        passive: true,
-      });
-
-      if (this.sidebarResizeTimer) {
-        cancel(this.sidebarResizeTimer);
-        this.sidebarResizeTimer = null;
-      }
-    },
-
-    @bind
-    _chatSidebarResize() {
-      this.sidebarResizeTimer = throttle(
-        this,
-        this._performChatSidebarResize,
-        10
-      );
-    },
-
-    _performChatSidebarResize() {
-      requestAnimationFrame(() => {
-        if (
-          site.mobileView ||
-          this.router.currentRouteName.startsWith("chat")
-        ) {
-          return;
-        }
-
-        const isValidBreakpoint = validBreakpoint();
-
-        if (isValidBreakpoint) {
-          this.openSidebarDrawer();
-
-          // Re-check once the chat drawer is open.
-          requestAnimationFrame(() => {
-            if (!validBreakpoint()) {
-              this.closeSidebarDrawer();
-            }
-          });
-        } else if (this.chatStateManager.isDrawerActive) {
-          this.closeSidebarDrawer();
-        }
-      });
+      this.chatSidebar.unobserve();
     },
 
     _performCheckSize() {
       this._super(...arguments);
-      this._chatSidebarResize();
+      this.chatSidebar.checkBreakpoint();
+    },
+
+    onChatSidebarState({ isBreakpointValid, shouldIgnoreRoute }) {
+      if (isBreakpointValid) {
+        if (!this.chatStateManager.isChatSidebarActive) {
+          this.openSidebarDrawer();
+        }
+      } else if (
+        (this.chatStateManager.isDrawerActive &&
+          this.chatStateManager.isChatSidebarActive) ||
+        shouldIgnoreRoute
+      ) {
+        this.closeSidebarDrawer();
+      }
     },
 
     closeSidebarDrawer() {
-      if (!this.chatStateManager.isChatSidebarActive) {
-        return;
-      }
-
       this.chatStateManager.isChatSidebarActive = false;
 
       // If the chat drawer was opened, we don't want to close it.
       if (this.chatStateManager.wasDrawerOpened) {
         this.chatStateManager.isDrawerExpanded =
           this.chatStateManager.wasDrawerExpanded;
-        document.body.classList.remove("chat-sidebar-active");
+        this.chatSidebar.removeBodyClassname();
         return;
       }
 
@@ -105,7 +73,7 @@ export default apiInitializer("1.8.0", (api) => {
       // If the chat drawer was opened, we don't want to reopen it.
       if (this.chatStateManager.wasDrawerOpened) {
         this.chatStateManager.isDrawerExpanded = true;
-        document.body.classList.add("chat-sidebar-active");
+        this.chatSidebar.addBodyClassname();
         return;
       }
 
@@ -114,6 +82,11 @@ export default apiInitializer("1.8.0", (api) => {
       }
 
       this.openURL("/chat");
+
+      // Re-check once the chat drawer is open.
+      requestAnimationFrame(() => {
+        this.chatSidebar.checkBreakpoint();
+      });
     },
   });
 
@@ -124,9 +97,8 @@ export default apiInitializer("1.8.0", (api) => {
       _mainOutletAnimate() {
         this._super(...arguments);
 
-        // Checks when the sidebar is toggled and after the animation.
         requestAnimationFrame(() => {
-          api.container.lookup("component:chat-drawer")._chatSidebarResize();
+          api.container.lookup("service:chat-sidebar").checkBreakpoint();
         });
       },
     });
@@ -134,28 +106,23 @@ export default apiInitializer("1.8.0", (api) => {
 
   api.addChatDrawerStateCallback(({ isDrawerActive, isDrawerExpanded }) => {
     const chatStateManager = api.container.lookup("service:chat-state-manager");
+    const chatSidebar = api.container.lookup("service:chat-sidebar");
 
     if (isDrawerActive) {
       if (!chatStateManager.isChatSidebarActive) {
         chatStateManager.wasDrawerOpened = true;
         chatStateManager.wasDrawerExpanded = isDrawerExpanded;
       } else {
-        document.body.classList.add("chat-sidebar-active");
+        chatSidebar.addBodyClassname();
       }
     } else {
       chatStateManager.wasDrawerOpened = false;
       chatStateManager.wasDrawerExpanded = false;
-      document.body.classList.remove("chat-sidebar-active");
+      chatSidebar.removeBodyClassname();
     }
   });
 
   api.onPageChange((path) => {
-    const route = api.container.lookup("service:router").recognize(path);
-
-    if (route.name.startsWith("chat.")) {
-      resetStyle();
-    } else {
-      api.container.lookup("component:chat-drawer")._chatSidebarResize();
-    }
+    api.container.lookup("service:chat-sidebar").checkBreakpoint(path);
   });
 });

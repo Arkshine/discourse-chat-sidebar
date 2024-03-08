@@ -31,9 +31,21 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
     position: fixed;
     top: var(--header-offset);
 
-    @if ($chat_sidebar_position == "outside-left") {
+    @if (
+      $chat_sidebar_position ==
+        "outside-left" or
+        $chat_sidebar_position ==
+        "left"
+    ) {
       left: 0;
-    } @else if ($chat_sidebar_position == "outside-right") {
+    } @else if
+      (
+        $chat_sidebar_position ==
+          "outside-right" or
+          $chat_sidebar_position ==
+          "right"
+      )
+    {
       right: 0;
     }
 

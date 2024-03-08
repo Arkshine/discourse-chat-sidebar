@@ -75,17 +75,17 @@ export function validBreakpoint() {
       `(min-width: calc(${elements.mainOutletWrapper.offsetWidth}px + ${settings.chat_sidebar_width} + ${chatSidebarGap}px + ${scrollbarWidth}px)`
     ).matches
   ) {
-    // We have room to display the chat drawer.
-    if (!elements.chatDrawer) {
-      return true;
-    }
-
     // Fixed breakpoint, make sure we don't go below.
     if (
       settings.chat_sidebar_breakpoint !== "auto" &&
       window.innerWidth < parseInt(settings.chat_sidebar_breakpoint, 10)
     ) {
       return false;
+    }
+
+    // We have room to display the chat drawer.
+    if (!elements.chatDrawer) {
+      return true;
     }
 
     if (

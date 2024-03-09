@@ -1,4 +1,5 @@
 import { inject as service } from "@ember/service";
+import { dasherize } from "@ember/string";
 import { apiInitializer } from "discourse/lib/api";
 import { PLUGIN_ID } from "../services/chat-sidebar";
 
@@ -14,6 +15,23 @@ export default apiInitializer("1.8.0", (api) => {
 
   if (!currentUser || !currentUser.get("has_chat_enabled")) {
     return;
+  }
+
+  // Gets the user's current theme.
+  const currentTheme = currentUser.site.user_themes.find((userTheme) =>
+    Array.from(document.querySelectorAll("link[data-theme-id]"))
+      .map((link) => parseInt(link.getAttribute("data-theme-id"), 10))
+      .includes(userTheme.theme_id)
+  );
+
+  if (currentTheme) {
+    // Not the most reliable way. Theme name can be changed.
+    // Since it's an optional setting, it's fine.
+    document.body.classList.add(
+      `theme__${dasherize(currentTheme.name.trim())
+        .replace(/-theme$/, "")
+        .replace(/'/, "")}`
+    );
   }
 
   api.modifyClass("component:chat-drawer", {

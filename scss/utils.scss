@@ -1,0 +1,23 @@
+/**
+ * Converts a string to a list by splitting it at each occurrence of a separator.
+ *
+ * @param {String} $string - The string to split.
+ * @param {String} $separator - The separator character.
+ * @return {List} - The list of split strings.
+ */
+@function str-to-list($string, $separator: "|") {
+  $list: ();
+  $current: "";
+  @for $i from 1 through str-length($string) {
+    $char: str-slice($string, $i, $i);
+    @if $char == $separator {
+      $list: append($list, $current, comma);
+      $current: "";
+    } @else {
+      $current: $current + $char;
+    }
+  }
+
+  $list: append($list, $current, comma);
+  @return $list;
+}

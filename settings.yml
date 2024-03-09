@@ -15,3 +15,18 @@ chat_sidebar_position:
     - outside-left
     - outside-right
   description: "Position of the chat sidebar."
+chat_sidebar_theme_style:
+  type: list
+  choices:
+    - left
+    - right
+    - outside-left
+    - outside-right
+  allow_any: false
+  default: "left|right|outside-left|outside-right"
+  description:
+    en: |
+      When possible, use the current theme style on these <strong>chat sidebar position</strong>s. <br />
+      <p>Available for most of the popular themes.<br />
+      This is not a reliable setting (theme name can be changed).<br />
+      Disable to use the default theme style.</p>

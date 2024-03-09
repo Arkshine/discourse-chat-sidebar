@@ -24,9 +24,6 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
   }
 
   .chat-drawer {
-    height: calc(
-      100vh - var(--header-offset, 0px) - var(--composer-height, 0px)
-    ) !important;
     width: var(--chat-sidebar-width) !important;
     position: fixed;
     top: var(--header-offset);
@@ -54,5 +51,14 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
       border-top: none;
       border-bottom: 1px solid var(--primary-low);
     }
+  }
+
+  @import "themes";
+
+  // Fallback
+  .chat-drawer {
+    height: calc(
+      100vh - var(--header-offset, 0px) - var(--composer-height, 0px)
+    ) !important;
   }
 }

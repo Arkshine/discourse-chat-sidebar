@@ -125,7 +125,6 @@ export default apiInitializer("1.8.0", (api) => {
 
   api.addChatDrawerStateCallback(({ isDrawerActive, isDrawerExpanded }) => {
     const chatStateManager = api.container.lookup("service:chat-state-manager");
-    const chatSidebar = api.container.lookup("service:chat-sidebar");
 
     if (isDrawerActive) {
       if (!chatStateManager.isChatSidebarActive) {

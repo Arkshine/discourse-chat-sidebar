@@ -5,7 +5,7 @@
   "about_url": "https://github.com/Arkshine/discourse-chat-sidebar/blob/main/README.md",
   "authors": "Arkshine",
   "theme_version": "1.0",
-  "minimum_discourse_version": "3.3.0.beta1",
+  "minimum_discourse_version": null,
   "maximum_discourse_version": null,
   "assets": {},
   "color_schemes": {},

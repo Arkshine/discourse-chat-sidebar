@@ -1,6 +1,32 @@
 en:
   theme_metadata:
     description: "Displays the chat in a sidebar"
+    settings:
+      chat_sidebar_breakpoint: |
+        Breakpoint in px for the chat sidebar to appear.<br />
+        Set to <strong>auto</strong> (recommended) to use the default sidebar and content width as a natural breakpoint.
+      chat_sidebar_width: |
+        Width of the chat sidebar.
+      chat_sidebar_position: |
+        Position of the chat sidebar.<br /><ul>
+        <li><strong>left</strong>: Stick to the left side of the content</li>
+        <li><strong>righ</strong>t: Stick to the right side of the content</li>
+        <li><strong>outside-left</strong>: Stick to the left side of the window</li>
+        <li><strong>outside-right</strong>: Stick to the right side of the window</li></ul>
+        <p><strong>left</strong> and <strong>right</strong> act like a sidebar is part of your content. All the elements together are centered.</p>
+        <p><strong>outside-left</strong> and <strong>outside-right</strong> act like a floating sidebar. The content shifts to maintain centered position, ensuring the sidebar doesn't overlap.  </p>
+      chat_sidebar_theme_style: |
+        When possible, use the current theme style on these <strong>chat sidebar position</strong>s. <br />
+        <p>Available only for most of the popular themes.<br />
+        This is not a reliable setting (theme name can be changed).<br />
+        Disable to use the default theme style.</p>
+      chat_sidebar_allow_user_preference: |
+        Allow users to set their own chat sidebar preferences.<br />
+        Note: this is saved in the uer's browser local storage.<br /><br />
+        Available values:
+        <ul>
+          <li><strong>position</strong>: Allow users to set the chat sidebar position</li>
+        </ul>
   user:
     preference:
       title: "Chat Sidebar Preferences"

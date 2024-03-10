@@ -1,6 +1,7 @@
 import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
 import { apiInitializer } from "discourse/lib/api";
+import UserPrefsHeaderIcon from "../components/user-prefs-header-icon";
 import { PLUGIN_ID } from "../services/chat-sidebar";
 
 export default apiInitializer("1.8.0", (api) => {
@@ -33,6 +34,8 @@ export default apiInitializer("1.8.0", (api) => {
         .replace(/'/, "")}`
     );
   }
+
+  api.headerIcons.add("d-chat", UserPrefsHeaderIcon, { before: "search" });
 
   api.modifyClass("component:chat-drawer", {
     pluginId: PLUGIN_ID,

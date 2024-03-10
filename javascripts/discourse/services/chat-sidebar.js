@@ -14,6 +14,7 @@ export const PLUGIN_ID = "chat-sidebar";
 export default class ChatSidebar extends Service {
   @service router;
   @service site;
+  @service chatSidebarUserPrefs;
 
   elements = {};
   computedStyles = {};
@@ -100,6 +101,17 @@ export default class ChatSidebar extends Service {
     document.body.classList.remove("chat-sidebar-active");
   }
 
+  get userPreferredPosition() {
+    return (
+      this.chatSidebarUserPrefs.preferredPosition ||
+      settings.chat_sidebar_position
+    );
+  }
+
+  resetPosition() {
+    this.checkBreakpoint();
+  }
+
   checkBreakpoint(path = null) {
     if (this.shouldIgnoreRoute(path)) {
       if (this.stateCallback) {
@@ -179,8 +191,8 @@ export default class ChatSidebar extends Service {
       }
 
       if (
-        settings.chat_sidebar_position === "right" ||
-        settings.chat_sidebar_position === "left"
+        this.userPreferredPosition === "right" ||
+        this.userPreferredPosition === "left"
       ) {
         const totalWidth =
           this.elements.mainOutletWrapper.offsetWidth +
@@ -195,7 +207,7 @@ export default class ChatSidebar extends Service {
 
         this.elements.header.parentElement.style.maxWidth = `${totalWidth}px`;
 
-        const direction = settings.chat_sidebar_position === "left" ? 1 : -1;
+        const direction = this.userPreferredPosition === "left" ? 1 : -1;
 
         const offsetToCenter =
           this.elements.mainOutletWrapper.getBoundingClientRect().left -
@@ -210,14 +222,14 @@ export default class ChatSidebar extends Service {
 
         this.#applyTransformX(this.elements.chatDrawer, direction * sideSpace);
       } else if (
-        settings.chat_sidebar_position === "outside-right" ||
-        settings.chat_sidebar_position === "outside-left"
+        this.userPreferredPosition === "outside-right" ||
+        this.userPreferredPosition === "outside-left"
       ) {
         const contentWithSideMargin =
           this.elements.mainOutletWrapper.offsetWidth +
           parseInt(
             this.computedStyles.mainOutletWrapper[
-              settings.chat_sidebar_position.includes("left")
+              this.userPreferredPosition.includes("left")
                 ? "marginLeft"
                 : "marginRight"
             ],
@@ -230,7 +242,7 @@ export default class ChatSidebar extends Service {
           chatSidebarGap;
 
         if (availableSpace < contentWithSideMargin) {
-          const translateX = settings.chat_sidebar_position.includes("left")
+          const translateX = this.userPreferredPosition.includes("left")
             ? contentWithSideMargin - availableSpace
             : availableSpace - contentWithSideMargin;
 
@@ -278,13 +290,13 @@ export default class ChatSidebar extends Service {
       transformReverLayerSupport ? "revert-layer" : 0
     );
 
-    if (
-      settings.chat_sidebar_position === "left" ||
-      settings.chat_sidebar_position === "right"
-    ) {
-      if (this.elements.header?.parentElement) {
-        this.elements.header.parentElement.style.maxWidth = "";
-      }
+    this.#applyTransformX(
+      this.elements.chatDrawer,
+      transformReverLayerSupport ? "revert-layer" : 0
+    );
+
+    if (this.elements.header?.parentElement) {
+      this.elements.header.parentElement.style.maxWidth = "";
     }
   }
 }

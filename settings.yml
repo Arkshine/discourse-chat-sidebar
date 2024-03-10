@@ -30,3 +30,18 @@ chat_sidebar_theme_style:
       <p>Available for most of the popular themes.<br />
       This is not a reliable setting (theme name can be changed).<br />
       Disable to use the default theme style.</p>
+chat_sidebar_allow_user_preference:
+  type: list
+  list_type: simple
+  choices:
+    - position
+  allow_any: false
+  default: "position"
+  description:
+    en: |
+      Allow users to set their own chat sidebar preferences.<br />
+      Note: this is saved in the uer's browser local storage.<br /><br />
+      Available values:
+      <ul>
+        <li><strong>position</strong>: Allow users to set the chat sidebar position</li>
+      </ul>

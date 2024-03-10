@@ -1,3 +1,8 @@
 en:
   theme_metadata:
     description: "Displays the chat in a sidebar"
+  user:
+    preference:
+      title: "Chat Sidebar Preferences"
+      option:
+        position: "Position"

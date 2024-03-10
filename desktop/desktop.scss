@@ -5,6 +5,34 @@
 }
 
 body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
+  .header-dropdown-toggle.chat-prefs-icon {
+    & > .btn-icon {
+      .d-icon-cog {
+        position: absolute;
+        font-size: 17px;
+        color: var(--header_primary-high);
+        top: 7px;
+        right: -8px;
+      }
+
+      &:hover .d-icon-cog,
+      &:focus .d-icon-cog {
+        color: var(--header_primary-medium);
+        stroke: var(--primary-900);
+        stroke-width: 1em;
+        stroke-opacity: 0.5;
+      }
+    }
+  }
+
+  #additional-panel-wrapper:has(.chat-sidebar-prefs-panel) {
+    box-shadow: var(--shadow-menu-panel);
+
+    .menu-panel.chat-sidebar-prefs-panel {
+      padding: 1rem;
+    }
+  }
+
   // Hides Chat icon in header
   .header-dropdown-toggle.chat-header-icon {
     display: none;
@@ -51,6 +79,16 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
       border-top: none;
       border-bottom: 1px solid var(--primary-low);
     }
+  }
+
+  &.chat-sidebar__left-position .chat-drawer,
+  &.chat-sidebar__outside-left-position .chat-drawer {
+    left: 0;
+  }
+
+  &.chat-sidebar__right-position .chat-drawer,
+  &.chat-sidebar__outside-right-position .chat-drawer {
+    right: 0;
   }
 
   @import "themes";

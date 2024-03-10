@@ -1,3 +1,4 @@
+import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { PLUGIN_ID } from "../services/chat-sidebar";
@@ -8,6 +9,12 @@ export default {
 
   initialize() {
     withPluginApi("1.2.0", (api) => {
+      const chatSidebar = api.container.lookup("service:chat-sidebar");
+
+      if (!chatSidebar.shouldEnable) {
+        return;
+      }
+
       api.modifyClass("service:chat-state-manager", {
         pluginId: PLUGIN_ID,
 

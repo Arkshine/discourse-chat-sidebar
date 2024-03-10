@@ -5,21 +5,14 @@ import UserPrefsHeaderIcon from "../components/user-prefs-header-icon";
 import { PLUGIN_ID } from "../services/chat-sidebar";
 
 export default apiInitializer("1.8.0", (api) => {
-  const siteSettings = api.container.lookup("service:site-settings");
-  const site = api.container.lookup("service:site");
+  const chatSidebar = api.container.lookup("service:chat-sidebar");
 
-  if (!siteSettings.chat_enabled || site.mobileView) {
-    return;
-  }
-
-  const currentUser = api.getCurrentUser();
-
-  if (!currentUser || !currentUser.get("has_chat_enabled")) {
+  if (!chatSidebar.shouldEnable) {
     return;
   }
 
   // Gets the user's current theme.
-  const currentTheme = currentUser.site.user_themes.find((userTheme) =>
+  const currentTheme = api.getCurrentUser().site.user_themes.find((userTheme) =>
     Array.from(document.querySelectorAll("link[data-theme-id]"))
       .map((link) => parseInt(link.getAttribute("data-theme-id"), 10))
       .includes(userTheme.theme_id)

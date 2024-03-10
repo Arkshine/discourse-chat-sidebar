@@ -13,8 +13,10 @@ export const PLUGIN_ID = "chat-sidebar";
 
 export default class ChatSidebar extends Service {
   @service router;
+  @service siteSettings;
   @service site;
   @service chatSidebarUserPrefs;
+  @service currentUser;
 
   elements = {};
   computedStyles = {};
@@ -61,6 +63,14 @@ export default class ChatSidebar extends Service {
     this.observing = false;
 
     return this;
+  }
+
+  get shouldEnable() {
+    return (
+      this.siteSettings.chat_enabled &&
+      !this.site.mobileView &&
+      this.currentUser?.has_chat_enabled
+    );
   }
 
   @bind

@@ -78,6 +78,9 @@ export default class UserPrefsHeaderIcon extends Component {
           >
             <div class="menu-panel-header">
               <h3>{{i18n (themePrefix "user.preference.title")}}</h3>
+              <p><em>{{i18n
+                    (themePrefix "user.preference.option.save_info")
+                  }}</em></p>
             </div>
             <div class="menu-panel-body">
               <div
@@ -96,9 +99,7 @@ export default class UserPrefsHeaderIcon extends Component {
                     @onChange={{this.onFilterDropdownChange}}
                   />
                 </div>
-                <div class="instructions"></div>
               </div>
-
             </div>
           </div>
         </@panelPortal>

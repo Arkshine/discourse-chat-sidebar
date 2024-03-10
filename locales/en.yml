@@ -6,3 +6,4 @@ en:
       title: "Chat Sidebar Preferences"
       option:
         position: "Position"
+        save_info: "The preferences are saved to your browser's local storage."

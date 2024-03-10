@@ -4,8 +4,14 @@
   --chat-sidebar-gap: 2em;
 }
 
+.header-dropdown-toggle.chat-prefs-icon {
+  display: none;
+}
+
 body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
   .header-dropdown-toggle.chat-prefs-icon {
+    display: block;
+
     & > .btn-icon {
       .d-icon-cog {
         position: absolute;

@@ -1,0 +1,35 @@
+en:
+  theme_metadata:
+    description: "Zeigt den Chat in einer Seitenleiste an"
+    settings:
+      chat_sidebar_breakpoint: |
+        Haltepunkt in px, damit die Chat-Seitenleiste erscheint.<br />
+        Auf <strong>auto</strong> festlegen (empfohlen), um die Standardbreite der Seitenleiste und des Inhalts als natürlichen Haltepunkt zu verwenden.
+      chat_sidebar_width: |
+        Breite der Chat-Seitenleiste.
+      chat_sidebar_position: |
+        Position der Chat-Seitenleiste.<br /><ul>
+        <li><strong>left</strong>: Auf der linken Seite des Inhalts anheften</li>
+        <li><strong>righ</strong>t: Auf der rechten Seite des Inhalts anheften</li>
+        <li><strong>outside-left</strong>: Auf der linken Seite des Fensters anheften</li>
+        <li><strong>outside-right</strong>: Auf der rechten Seite des Fensters anheften</li></ul>
+        <p><strong>left</strong> und <strong>right</strong> verhalten sich so, als ob eine Seitenleiste Teil deines Inhalts wäre. Alle Elemente zusammen werden zentriert.</p>
+        <p><strong>Outside-left</strong> and <strong>outside-right</strong> act like a floating sidebar. The content shifts to maintain centered position, ensuring the sidebar doesn't overlap.  </p>
+      chat_sidebar_theme_style: |
+        Wenn möglich, verwende für diese <strong>Chat-Seitenleistenpositionen</strong> den aktuellen Theme-Stil. <br />
+        <p>Nur für die meisten der beliebten Themen verfügbar.<br />
+        Dies ist keine verlässliche Einstellung (der Themenname kann geändert werden).<br />
+        Deaktivieren, um den Standardstil des Themas zu verwenden.</p>
+      chat_sidebar_allow_user_preference: |
+        Erlaubt es den Nutzern, ihre eigenen Einstellungen für die Chat-Seitenleiste festzulegen.<br />
+        Hinweis: Dies wird im lokalen Speicher des Browsers des Benutzers gespeichert.<br /><br />
+        Verfügbare Werte:
+        <ul>
+          <li><strong>position</strong>: Den Nutzern erlauben, die Position der Chat-Seitenleiste festzulegen</li>
+        </ul>
+  user:
+    preference:
+      title: "Einstellungen für die Chat-Seitenleiste"
+      option:
+        position: "Position"
+        save_info: "Die Einstellungen werden im lokalen Speicher deines Browsers gespeichert."

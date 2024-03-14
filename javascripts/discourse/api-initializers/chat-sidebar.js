@@ -2,7 +2,7 @@ import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
 import { apiInitializer } from "discourse/lib/api";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import UserPrefsHeaderIcon from "../components/user-prefs-header-icon";
+import UserPreferences from "../components/user-preferences";
 import { PLUGIN_ID } from "../services/chat-sidebar";
 
 export default apiInitializer("1.8.0", (api) => {
@@ -31,7 +31,7 @@ export default apiInitializer("1.8.0", (api) => {
 
   withPluginApi("1.29.0", () => {
     if (settings.chat_sidebar_allow_user_preference) {
-      api.headerIcons.add("d-chat", UserPrefsHeaderIcon, { before: "search" });
+      api.headerIcons.add("d-chat", UserPreferences, { before: "search" });
     }
   });
 

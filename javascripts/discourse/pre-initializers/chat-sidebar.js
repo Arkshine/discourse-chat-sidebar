@@ -18,7 +18,7 @@ export default {
       api.modifyClass("service:chat-state-manager", {
         pluginId: PLUGIN_ID,
 
-        @tracked isChatSidebarActive: false,
+        isChatSidebarActive: tracked({ value: false }),
         wasDrawerOpened: false,
         wasDrawerExpanded: true,
       });

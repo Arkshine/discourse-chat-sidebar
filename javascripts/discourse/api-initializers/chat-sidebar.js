@@ -1,10 +1,9 @@
 import { service } from "@ember/service";
 import { dasherize } from "@ember/string";
 import { apiInitializer } from "discourse/lib/api";
-import { withPluginApi } from "discourse/lib/plugin-api";
 import UserPreferences from "../components/user-preferences";
 
-export default apiInitializer("1.8.0", (api) => {
+export default apiInitializer((api) => {
   const chatSidebar = api.container.lookup("service:chat-sidebar");
 
   if (!chatSidebar.shouldEnable) {
@@ -28,11 +27,9 @@ export default apiInitializer("1.8.0", (api) => {
     );
   }
 
-  withPluginApi("1.29.0", () => {
-    if (settings.chat_sidebar_allow_user_preference) {
-      api.headerIcons.add("d-chat", UserPreferences, { before: "search" });
-    }
-  });
+  if (settings.chat_sidebar_allow_user_preference) {
+    api.headerIcons.add("d-chat", UserPreferences, { before: "search" });
+  }
 
   api.modifyClass(
     "component:chat-drawer",
@@ -87,7 +84,6 @@ export default apiInitializer("1.8.0", (api) => {
         }
 
         openSidebarDrawer() {
-          console.log("openSidebarDrawer");
           this.chatStateManager.isChatSidebarActive = true;
 
           // If the chat drawer was opened, we don't want to reopen it.

@@ -9,7 +9,7 @@ export default {
   after: "inject-discourse-objects",
 
   initialize() {
-    withPluginApi("1.2.0", (api) => {
+    withPluginApi((api) => {
       const chatSidebar = api.container.lookup("service:chat-sidebar");
 
       if (!chatSidebar.shouldEnable) {

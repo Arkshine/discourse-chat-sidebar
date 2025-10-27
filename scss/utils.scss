@@ -1,3 +1,6 @@
+@use "sass:string";
+@use "sass:list";
+
 /**
  * Converts a string to a list by splitting it at each occurrence of a separator.
  *
@@ -8,16 +11,19 @@
 @function str-to-list($string, $separator: "|") {
   $list: ();
   $current: "";
-  @for $i from 1 through str-length($string) {
-    $char: str-slice($string, $i, $i);
+
+  @for $i from 1 through string.length($string) {
+    $char: string.slice($string, $i, $i);
+
     @if $char == $separator {
-      $list: append($list, $current, comma);
+      $list: list.append($list, $current, comma);
       $current: "";
     } @else {
       $current: $current + $char;
     }
   }
 
-  $list: append($list, $current, comma);
+  $list: list.append($list, $current, comma);
+
   @return $list;
 }

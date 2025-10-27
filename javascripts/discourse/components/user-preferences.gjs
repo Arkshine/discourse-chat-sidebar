@@ -1,15 +1,13 @@
 import Component from "@ember/component";
 import { service } from "@ember/service";
 import DMenu from "discourse/components/d-menu";
-import icon from "discourse-common/helpers/d-icon";
-import i18n from "discourse-common/helpers/i18n";
+import icon from "discourse/helpers/d-icon";
+import { i18n } from "discourse-i18n";
 import UserPreferencesMenu from "./user-preferences-menu";
 
 export default class UserPreferences extends Component {
-  @service chatSidebarUserPrefs;
   @service chatStateManager;
   @service siteSettings;
-  @service site;
 
   get shouldDisplay() {
     return (

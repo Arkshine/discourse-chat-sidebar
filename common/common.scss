@@ -70,6 +70,13 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
     width: var(--chat-sidebar-width) !important;
     position: fixed;
     top: var(--header-offset);
+    height: calc(
+      100vh - var(--header-offset, 0px) - var(--composer-height, 0px)
+    ) !important;
+
+    &.full-height {
+      height: calc(100vh - var(--header-offset, 0px)) !important;
+    }
 
     @if (
       $chat_sidebar_position ==
@@ -104,18 +111,5 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
   &.chat-sidebar__right-position .chat-drawer,
   &.chat-sidebar__outside-right-position .chat-drawer {
     right: 0;
-  }
-
-  @import "themes";
-
-  // Fallback
-  .chat-drawer {
-    height: calc(
-      100vh - var(--header-offset, 0px) - var(--composer-height, 0px)
-    ) !important;
-
-    &.full-height {
-      height: calc(100vh - var(--header-offset, 0px)) !important;
-    }
   }
 }

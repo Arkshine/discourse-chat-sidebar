@@ -10,6 +10,10 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
       flex-direction: column;
       padding: 1rem;
     }
+
+    &:has(.chat-prefs-icon) {
+      overflow: visible;
+    }
   }
 
   .chat-sidebar {
@@ -17,7 +21,7 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
       position: relative;
     }
 
-    &__cog-icon {
+    &__gear-icon {
       position: absolute;
       font-size: 17px;
       width: 17px;
@@ -27,8 +31,8 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
       z-index: 1;
     }
 
-    &__chat-icon:hover + .d-icon-cog,
-    &__chat-icon:focus + .d-icon-cog {
+    &__chat-icon:hover + .d-icon-gear,
+    &__chat-icon:focus + .d-icon-gear {
       color: var(--header_primary-medium);
       stroke: var(--primary-900);
       stroke-width: 1em;

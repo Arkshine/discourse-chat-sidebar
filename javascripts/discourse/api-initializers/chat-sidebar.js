@@ -1,11 +1,9 @@
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import { dasherize } from "@ember/string";
 import { apiInitializer } from "discourse/lib/api";
-import { withPluginApi } from "discourse/lib/plugin-api";
 import UserPreferences from "../components/user-preferences";
-import { PLUGIN_ID } from "../services/chat-sidebar";
 
-export default apiInitializer("1.8.0", (api) => {
+export default apiInitializer((api) => {
   const chatSidebar = api.container.lookup("service:chat-sidebar");
 
   if (!chatSidebar.shouldEnable) {
@@ -29,99 +27,85 @@ export default apiInitializer("1.8.0", (api) => {
     );
   }
 
-  withPluginApi("1.29.0", () => {
-    if (settings.chat_sidebar_allow_user_preference) {
-      api.headerIcons.add("d-chat", UserPreferences, { before: "search" });
-    }
-  });
-
-  api.modifyClass("component:chat-drawer", {
-    pluginId: PLUGIN_ID,
-
-    chatSidebar: service(),
-
-    didInsertElement() {
-      this._super(...arguments);
-
-      this.chatSidebar.observe().options({
-        stateCallback: this.onChatSidebarState.bind(this),
-      });
-    },
-
-    willDestroyElement() {
-      this._super(...arguments);
-      this.chatSidebar.unobserve();
-    },
-
-    _performCheckSize() {
-      this._super(...arguments);
-      this.chatSidebar.checkBreakpoint();
-    },
-
-    onChatSidebarState({ isBreakpointValid, shouldIgnoreRoute }) {
-      if (isBreakpointValid) {
-        if (!this.chatStateManager.isChatSidebarActive) {
-          this.openSidebarDrawer();
-        }
-      } else if (
-        (this.chatStateManager.isDrawerActive &&
-          this.chatStateManager.isChatSidebarActive) ||
-        shouldIgnoreRoute
-      ) {
-        this.closeSidebarDrawer();
-      }
-    },
-
-    closeSidebarDrawer() {
-      this.chatStateManager.isChatSidebarActive = false;
-
-      // If the chat drawer was opened, we don't want to close it.
-      if (this.chatStateManager.wasDrawerOpened) {
-        this.chatStateManager.isDrawerExpanded =
-          this.chatStateManager.wasDrawerExpanded;
-        this.chatSidebar.removeBodyClassname();
-        return;
-      }
-
-      this.close();
-    },
-
-    openSidebarDrawer() {
-      this.chatStateManager.isChatSidebarActive = true;
-
-      // If the chat drawer was opened, we don't want to reopen it.
-      if (this.chatStateManager.wasDrawerOpened) {
-        this.chatStateManager.isDrawerExpanded = true;
-        this.chatSidebar.addBodyClassname();
-        return;
-      }
-
-      if (this.chatStateManager.isDrawerActive) {
-        return;
-      }
-
-      this.openURL("/chat");
-
-      // Re-check once the chat drawer is open.
-      requestAnimationFrame(() => {
-        this.chatSidebar.checkBreakpoint();
-      });
-    },
-  });
-
-  if (settings.chat_sidebar_breakpoint === "auto") {
-    api.modifyClass("controller:application", {
-      pluginId: PLUGIN_ID,
-
-      _mainOutletAnimate() {
-        this._super(...arguments);
-
-        requestAnimationFrame(() => {
-          api.container.lookup("service:chat-sidebar").checkBreakpoint();
-        });
-      },
-    });
+  if (settings.chat_sidebar_allow_user_preference) {
+    api.headerIcons.add("d-chat", UserPreferences, { before: "search" });
   }
+
+  api.modifyClass(
+    "component:chat-drawer",
+    (SuperClass) =>
+      class extends SuperClass {
+        @service chatSidebar;
+
+        didInsertElement() {
+          super.didInsertElement(...arguments);
+
+          this.chatSidebar.observe().options({
+            stateCallback: this.onChatSidebarState.bind(this),
+          });
+        }
+
+        willDestroyElement() {
+          super.willDestroyElement(...arguments);
+          this.chatSidebar.unobserve();
+        }
+
+        _performCheckSize() {
+          super._performCheckSize(...arguments);
+          this.chatSidebar.checkBreakpoint();
+        }
+
+        onChatSidebarState({ isBreakpointValid, shouldIgnoreRoute }) {
+          if (isBreakpointValid) {
+            if (!this.chatStateManager.isChatSidebarActive) {
+              this.openSidebarDrawer();
+            }
+          } else if (
+            (this.chatStateManager.isDrawerActive &&
+              this.chatStateManager.isChatSidebarActive) ||
+            shouldIgnoreRoute
+          ) {
+            this.closeSidebarDrawer();
+          }
+        }
+
+        closeSidebarDrawer() {
+          this.chatStateManager.isChatSidebarActive = false;
+
+          // If the chat drawer was opened, we don't want to close it.
+          if (this.chatStateManager.wasDrawerOpened) {
+            this.chatStateManager.isDrawerExpanded =
+              this.chatStateManager.wasDrawerExpanded;
+            this.chatSidebar.removeBodyClassname();
+            return;
+          }
+
+          this.close();
+        }
+
+        openSidebarDrawer() {
+          this.chatStateManager.isChatSidebarActive = true;
+
+          // If the chat drawer was opened, we don't want to reopen it.
+          if (this.chatStateManager.wasDrawerOpened) {
+            this.chatStateManager.isDrawerExpanded = true;
+            this.chatSidebar.addBodyClassname();
+            return;
+          }
+
+          if (this.chatStateManager.isDrawerActive) {
+            return;
+          }
+
+          this.openURL("/chat");
+
+          // Re-check once the chat drawer is open.
+          requestAnimationFrame(() => {
+            this.chatSidebar.checkBreakpoint();
+          });
+        }
+      }
+  );
 
   api.addChatDrawerStateCallback(({ isDrawerActive, isDrawerExpanded }) => {
     const chatStateManager = api.container.lookup("service:chat-state-manager");

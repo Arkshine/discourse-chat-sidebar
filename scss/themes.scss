@@ -1,6 +1,7 @@
+@use "sass:list";
 @import "utils";
 
-@if index(
+@if list.index(
     str-to-list($chat_sidebar_theme_style, "|"),
     $chat_sidebar_position
   ) !=
@@ -17,11 +18,11 @@
           top: 30px;
           background-color: var(--secondary);
           border-radius: 1em;
-
-          box-shadow: 0 24px 40px rgba(0, 0, 0, 0.07),
-            0 10.8529px 24.1177px rgba(0, 0, 0, 0.0456112),
-            0 4.50776px 10.0172px rgba(0, 0, 0, 0.035),
-            0 1.63037px 3.62304px rgba(0, 0, 0, 0.0243888);
+          box-shadow:
+            0 24px 40px rgb(0, 0, 0, 0.07),
+            0 10.8529px 24.1177px rgb(0, 0, 0, 0.0456112),
+            0 4.50776px 10.0172px rgb(0, 0, 0, 0.035),
+            0 1.63037px 3.62304px rgb(0, 0, 0, 0.0243888);
         }
       }
     }
@@ -48,7 +49,7 @@
           border-radius: 16px;
           border: none;
           backdrop-filter: blur(3rem) !important;
-          background-color: rgba(10, 10, 10, 0.6509803922) !important;
+          background-color: rgb(10, 10, 10, 0.6509803922) !important;
         }
       }
     }
@@ -62,7 +63,7 @@
         .chat-drawer-container {
           background: var(--secondary);
           border-radius: 5px;
-          box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.12);
+          box-shadow: 2px 2px 8px rgb(0, 0, 0, 0.12);
           top: 1.5em;
         }
       }
@@ -76,7 +77,7 @@
 
         .chat-drawer-container {
           background: var(--secondary);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 1px 2px rgb(0, 0, 0, 0.2);
           border-radius: var(--d-default-border-radius);
           border: none;
           border-right: 1px solid var(--primary-low);
@@ -95,10 +96,9 @@
         .chat-drawer-container {
           background: linear-gradient(
             120deg,
-            rgba(255, 25, 223, 0.25),
-            rgba(0, 208, 193, 0.25)
+            rgb(255, 25, 223, 0.25),
+            rgb(0, 208, 193, 0.25)
           );
-
           top: 1.5em;
         }
       }
@@ -114,7 +114,7 @@
           background-color: var(--secondary);
           border-radius: 8px;
           top: 2em;
-          box-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+          box-shadow: 0 1px 8px rgb(0, 0, 0, 0.18);
         }
       }
     }
@@ -127,9 +127,10 @@
 
         .chat-drawer-container {
           top: 1.5em;
-          box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
-            0px 1px 1px 0px rgba(0, 0, 0, 0.14),
-            0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+          box-shadow:
+            0 2px 1px -1px rgb(0, 0, 0, 0.2),
+            0 1px 1px 0 rgb(0, 0, 0, 0.14),
+            0 1px 3px 0 rgb(0, 0, 0, 0.12);
         }
       }
     }
@@ -142,8 +143,9 @@
 
         .chat-drawer-container {
           background-color: var(--primary-very-low);
-          box-shadow: 0 8px 60px 0 rgba(103, 151, 255, 0.1),
-            0 12px 90px 0 rgba(133, 255, 103, 0.1);
+          box-shadow:
+            0 8px 60px 0 rgb(103, 151, 255, 0.1),
+            0 12px 90px 0 rgb(133, 255, 103, 0.1);
           top: 1em;
           border-top: 8px solid var(--tertiary);
           border-radius: var(--mint-border-radius);

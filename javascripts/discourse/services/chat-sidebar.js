@@ -1,6 +1,6 @@
 import { cancel, throttle } from "@ember/runloop";
-import Service, { inject as service } from "@ember/service";
-import { bind } from "discourse-common/utils/decorators";
+import Service, { service } from "@ember/service";
+import { bind } from "discourse/lib/decorators";
 
 const ROUTES_TO_IGNORE = ["chat."];
 const ELEMENT_SELECTORS = {
@@ -14,7 +14,6 @@ export const PLUGIN_ID = "chat-sidebar";
 export default class ChatSidebar extends Service {
   @service router;
   @service siteSettings;
-  @service site;
   @service chatSidebarUserPrefs;
   @service currentUser;
 
@@ -66,11 +65,7 @@ export default class ChatSidebar extends Service {
   }
 
   get shouldEnable() {
-    return (
-      this.siteSettings.chat_enabled &&
-      !this.site.mobileView &&
-      this.currentUser?.has_chat_enabled
-    );
+    return this.siteSettings.chat_enabled && this.currentUser?.has_chat_enabled;
   }
 
   @bind

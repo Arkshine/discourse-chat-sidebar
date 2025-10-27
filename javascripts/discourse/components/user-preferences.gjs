@@ -1,20 +1,17 @@
 import Component from "@ember/component";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import DMenu from "discourse/components/d-menu";
-import icon from "discourse-common/helpers/d-icon";
-import i18n from "discourse-common/helpers/i18n";
+import icon from "discourse/helpers/d-icon";
+import { i18n } from "discourse-i18n";
 import UserPreferencesMenu from "./user-preferences-menu";
 
 export default class UserPreferences extends Component {
-  @service chatSidebarUserPrefs;
   @service chatStateManager;
   @service siteSettings;
-  @service site;
 
   get shouldDisplay() {
     return (
       this.siteSettings.chat_enabled &&
-      !this.site.mobileView &&
       this.chatStateManager.isChatSidebarActive &&
       settings.chat_sidebar_allow_user_preference
         .split("|")
@@ -34,7 +31,7 @@ export default class UserPreferences extends Component {
             <UserPreferencesMenu />
           </:content>
         </DMenu>
-        {{icon "cog" class="chat-sidebar__cog-icon"}}
+        {{icon "gear" class="chat-sidebar__gear-icon"}}
       </div>
     {{/if}}
   </template>

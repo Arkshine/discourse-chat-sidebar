@@ -86,6 +86,7 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
     ) {
       left: 0;
     } @else if
+      /* stylelint-disable-line */
       (
         $chat_sidebar_position ==
           "outside-right" or

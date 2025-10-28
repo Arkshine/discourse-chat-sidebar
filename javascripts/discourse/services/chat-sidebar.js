@@ -15,6 +15,7 @@ export default class ChatSidebar extends Service {
   @service router;
   @service siteSettings;
   @service chatSidebarUserPrefs;
+  @service chatStateManager;
   @service currentUser;
 
   elements = {};
@@ -118,6 +119,11 @@ export default class ChatSidebar extends Service {
   }
 
   checkBreakpoint(path = null) {
+    if (this.chatStateManager.isFullPagePreferred) {
+      this.unobserve();
+      return false;
+    }
+
     if (this.shouldIgnoreRoute(path)) {
       if (this.stateCallback) {
         this.stateCallback({

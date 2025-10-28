@@ -36,6 +36,7 @@ export default apiInitializer((api) => {
     (SuperClass) =>
       class extends SuperClass {
         @service chatSidebar;
+        @service events;
 
         didInsertElement() {
           super.didInsertElement(...arguments);
@@ -43,11 +44,20 @@ export default apiInitializer((api) => {
           this.chatSidebar.observe().options({
             stateCallback: this.onChatSidebarState.bind(this),
           });
+
+          this.appEvents.on("chat:toggle-close", this, this.closeSidebarDrawer);
         }
 
         willDestroyElement() {
           super.willDestroyElement(...arguments);
+
           this.chatSidebar.unobserve();
+
+          this.appEvents.off(
+            "chat:toggle-close",
+            this,
+            this.closeSidebarDrawer
+          );
         }
 
         _performCheckSize() {
@@ -114,6 +124,12 @@ export default apiInitializer((api) => {
       if (!chatStateManager.isChatSidebarActive) {
         chatStateManager.wasDrawerOpened = true;
         chatStateManager.wasDrawerExpanded = isDrawerExpanded;
+
+        // If the chat has been closed with esc key,
+        // we need to re-check here since the other event is not triggered.
+        requestAnimationFrame(() => {
+          api.container.lookup("service:chat-sidebar").checkBreakpoint();
+        });
       } else {
         chatSidebar.addBodyClassname();
       }

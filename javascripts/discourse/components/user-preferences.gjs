@@ -7,11 +7,11 @@ import UserPreferencesMenu from "./user-preferences-menu";
 
 export default class UserPreferences extends Component {
   @service chatStateManager;
-  @service siteSettings;
+  @service chatSidebar;
 
   get shouldDisplay() {
     return (
-      this.siteSettings.chat_enabled &&
+      this.chatSidebar.shouldEnable &&
       this.chatStateManager.isChatSidebarActive &&
       settings.chat_sidebar_allow_user_preference
         .split("|")

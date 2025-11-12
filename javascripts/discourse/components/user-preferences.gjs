@@ -1,6 +1,6 @@
 import Component from "@ember/component";
 import { service } from "@ember/service";
-import DMenu from "discourse/components/d-menu";
+import DMenu from "float-kit/components/d-menu";
 import icon from "discourse/helpers/d-icon";
 import { i18n } from "discourse-i18n";
 import UserPreferencesMenu from "./user-preferences-menu";

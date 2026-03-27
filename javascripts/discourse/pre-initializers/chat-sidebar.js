@@ -46,20 +46,6 @@ export default {
           }
       );
 
-      // Remove the clickable class from the navbar when the chat sidebar is active
-      api.addChatDrawerStateCallback(({ isDrawerActive }) => {
-        if (
-          isDrawerActive &&
-          api.container.lookup("service:chat-state-manager").isChatSidebarActive
-        ) {
-          requestAnimationFrame(() => {
-            document
-              .querySelector(".c-navbar-container")
-              ?.classList.remove("-clickable");
-          });
-        }
-      });
-
       if (settings.chat_sidebar_breakpoint === "auto") {
         api.modifyClass(
           "controller:application",

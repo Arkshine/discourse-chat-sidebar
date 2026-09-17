@@ -12,11 +12,14 @@ Notes:
 
 ## Settings
 
-| Name                      | Default         | Description                                                                                                                                                                                                                                                       |
-| ------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `chat_sidebar_breakpoint` | `auto`          | Breakpoint in px for the chat sidebar to appear.<br /> Set to <code>auto</code> to use the default sidebar and content width as a breakpoint."                                                                                                                    |
-| `chat_sidebar_width`      | `400px`         | Width of the chat sidebar.                                                                                                                                                                                                                                        |
-| `chat_sidebar_position`   | `outside-right` | `left`: Docked to the main content at the left (including left sidebar)<br />`right`: Docked to the main content at the right (including sidebar)<br /> `outside-left`: Docked to the window at the left<br /> `outside-right`: Docked to the window at the right |
+| Name                                  | Default         | Description                                                                                                                                                                                                                                                       |
+| ------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_sidebar_breakpoint`             | `auto`          | Breakpoint in px for the chat sidebar to appear.<br /> Set to <code>auto</code> to use the default sidebar and content width as a breakpoint."                                                                                                                    |
+| `chat_sidebar_width`                  | `400px`         | Width of the chat sidebar.                                                                                                                                                                                                                                        |
+| `chat_sidebar_position`               | `outside-right` | `left`: Docked to the main content at the left (including left sidebar)<br />`right`: Docked to the main content at the right (including sidebar)<br /> `outside-left`: Docked to the window at the left<br /> `outside-right`: Docked to the window at the right |
+| `chat_sidebar_default_public_channel` | `0`             | Public channel opened by default when the chat sidebar appears.                                                                                                                                                                                                   |
+| `chat_sidebar_theme_style`            | all positions   | Use the current theme style on these positions when possible. Not reliable (it relies on the theme name); clear it to always use the default style.                                                                                                               |
+| `chat_sidebar_allow_user_preference`  | `position`      | Preferences users can set for themselves, saved in their browser's local storage. `position`: let users choose the sidebar position.                                                                                                                              |
 
 ## Screenshots
 
@@ -32,7 +35,6 @@ Some examples (video coming soon)
 - Tests
 - Settings to control the original drawer actions
 - Improve animation and smoothness overall (a bit crude right now)
-- Can we have user's preferences?
 
 ## Dev Notes
 

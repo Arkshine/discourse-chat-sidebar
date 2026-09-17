@@ -69,6 +69,12 @@ export default class ChatSidebar extends Service {
     return this.siteSettings.chat_enabled && this.currentUser?.has_chat_enabled;
   }
 
+  get defaultChannelURL() {
+    return settings.chat_sidebar_default_public_channel
+      ? `/chat/c/-/${settings.chat_sidebar_default_public_channel}`
+      : "/chat";
+  }
+
   @bind
   _resize() {
     this.sidebarResizeTimer = throttle(this, this._performResize, 10);

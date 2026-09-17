@@ -27,6 +27,11 @@ en:
         <ul>
           <li><strong>position</strong>: Allow users to set the chat sidebar position</li>
         </ul>
+      chat_sidebar_default_public_channel: |
+        Public channel opened by default when the chat sidebar appears.
+  settings_ui:
+    default_public_channel:
+      none: "No default channel"
   user:
     preference:
       title: "Chat Sidebar Preferences"

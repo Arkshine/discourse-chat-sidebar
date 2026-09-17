@@ -29,3 +29,7 @@ chat_sidebar_allow_user_preference:
     - position
   allow_any: false
   default: "position"
+chat_sidebar_default_public_channel:
+  type: integer
+  default: 0
+  min: 0

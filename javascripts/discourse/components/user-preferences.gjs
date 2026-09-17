@@ -1,8 +1,8 @@
 import Component from "@ember/component";
 import { service } from "@ember/service";
-import DMenu from "float-kit/components/d-menu";
 import icon from "discourse/helpers/d-icon";
 import { i18n } from "discourse-i18n";
+import DMenu from "float-kit/components/d-menu";
 import UserPreferencesMenu from "./user-preferences-menu";
 
 export default class UserPreferences extends Component {

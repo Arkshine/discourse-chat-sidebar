@@ -1,9 +1,29 @@
 import { service } from "@ember/service";
 import { dasherize } from "@ember/string";
 import { apiInitializer } from "discourse/lib/api";
+import DefaultChannelPicker from "../components/settings/default-channel-picker";
 import UserPreferences from "../components/user-preferences";
 
 export default apiInitializer((api) => {
+  const siteSettings = api.container.lookup("service:site-settings");
+
+  api.modifyClass(
+    "component:theme-setting-editor",
+    (SuperClass) =>
+      class extends SuperClass {
+        get resolvedComponent() {
+          if (
+            siteSettings.chat_enabled &&
+            this.setting?.setting === "chat_sidebar_default_public_channel"
+          ) {
+            return DefaultChannelPicker;
+          }
+
+          return super.resolvedComponent;
+        }
+      }
+  );
+
   const chatSidebar = api.container.lookup("service:chat-sidebar");
 
   if (!chatSidebar.shouldEnable) {
@@ -107,7 +127,7 @@ export default apiInitializer((api) => {
             return;
           }
 
-          this.openURL("/chat");
+          this.openURL(this.chatSidebar.defaultChannelURL);
 
           // Re-check once the chat drawer is open.
           requestAnimationFrame(() => {
@@ -145,7 +165,7 @@ export default apiInitializer((api) => {
     if (
       isDrawerActive &&
       api.container.lookup("service:chat-state-manager").isChatSidebarActive
-    ) {  
+    ) {
       requestAnimationFrame(() => {
         document
           .querySelector(".c-navbar-container")

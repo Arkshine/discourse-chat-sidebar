@@ -114,3 +114,13 @@ body.chat-enabled.chat-sidebar-active:not(.has-full-page-chat) {
     right: 0;
   }
 }
+
+.chat-sidebar-default-channel {
+  margin-top: 0.5em;
+
+  .select-kit-row.none {
+    font-style: italic;
+    color: var(--primary-medium);
+    border-bottom: 1px solid var(--primary-low);
+  }
+}

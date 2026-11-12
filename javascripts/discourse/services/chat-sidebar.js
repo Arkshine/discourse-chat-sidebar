@@ -231,7 +231,7 @@ export default class ChatSidebar extends Service {
           sideSpace;
 
         if (offsetToCenter > 0) {
-          this.#applyTransformX(
+          this.#applyOffsetX(
             this.elements.mainOutletWrapper,
             direction * offsetToCenter
           );
@@ -263,7 +263,7 @@ export default class ChatSidebar extends Service {
             ? contentWithSideMargin - availableSpace
             : availableSpace - contentWithSideMargin;
 
-          this.#applyTransformX(this.elements.mainOutletWrapper, translateX);
+          this.#applyOffsetX(this.elements.mainOutletWrapper, translateX);
           this.#applyTransformX(this.elements.header, translateX);
         }
       }
@@ -295,13 +295,21 @@ export default class ChatSidebar extends Service {
     }
   }
 
+  // No transform here. it would become the containing block of the fixed composer inside it.
+  // https://meta.discourse.org/t/chat-sidebar/298829/20?u=arkshine
+  #applyOffsetX(element, value) {
+    if (element) {
+      element.style.position = "relative";
+      element.style.left = `${value}px`;
+    }
+  }
+
   #resetStyle() {
     const transformReverLayerSupport = CSS.supports("transform:revert-layer");
 
-    this.#applyTransformX(
-      this.elements.mainOutletWrapper,
-      transformReverLayerSupport ? "revert-layer" : 0
-    );
+    this.elements.mainOutletWrapper?.style.removeProperty("position");
+    this.elements.mainOutletWrapper?.style.removeProperty("left");
+
     this.#applyTransformX(
       this.elements.header,
       transformReverLayerSupport ? "revert-layer" : 0
